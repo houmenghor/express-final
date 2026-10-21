@@ -1,0 +1,8 @@
+Register
+Login
+Send OTP
+Verify OTP
+Resend OTP
+Logout
+Forgot Password
+Deployment 
