@@ -5,7 +5,7 @@ const register = async (req, res) => {
         const response = await authService.register(req.validate);
         return res.status(201).json({
             status: 'success',
-            message: 'Registered successfully. Please check your email for the OTP.',
+            message: 'Registered successfully. Please check your mailbox or spam folder for the OTP.',
             data: response
         });
     } catch (error) {
@@ -18,6 +18,25 @@ const register = async (req, res) => {
     }
 }
 
+const verifyOtp = async (req, res) => {
+    try {
+        const { email, otp_code } = req.validate;
+        const response = await authService.verifyOtp(email, otp_code);
+        return res.json({
+            status: 'success',
+            message: 'Account activated successfully',
+            data: response
+        });
+    } catch (error) {
+        return res.status(400).json({
+            status: 'error',
+            message: 'OTP verification failed',
+            error: error.message
+        });
+    }
+}
+
 module.exports = {
-    register
+    register,
+    verifyOtp
 }

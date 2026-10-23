@@ -23,8 +23,24 @@ const activateUser = async (email) => {
     return result.rows[0];
 }
 
+const getUserByEmail = async (email) => {
+    const query = 'SELECT email, is_active, otp_code, otp_expires_at FROM users WHERE email = $1';
+    const value = [email];
+    const result = await pool.query(query, value);
+    return result.rows[0];
+}
+
+const findUserById = async (id) => {
+    const query = 'SELECT id, username, email, is_active, profile_image FROM users WHERE id = $1';
+    const value = [id];
+    const result = await pool.query(query, value);
+    return result.rows[0];
+}
+
 module.exports = {
     checkEmailExists,
     createUser,
-    activateUser
+    activateUser,
+    findUserById,
+    getUserByEmail
 }

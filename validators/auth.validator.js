@@ -17,6 +17,16 @@ const registerSchema = z.object({
     path: ["confirmPassword"]
 });
 
+const verifyOtpSchema = z.object({
+    email: z.string()
+        .min(1, "Email is required")
+        .email("Please enter a valid email address"),
+    otp_code: z.string()
+        .min(1, "OTP code is required")
+        .min(6, "OTP code must be 6 characters")
+});
+
 module.exports = {
     registerSchema,
+    verifyOtpSchema
 }

@@ -37,8 +37,29 @@ const register = async (body) => {
     return user;
 }
 
+const verifyOtp = async (email, otpCode) => {
+    const user = await userModel.getUserByEmail(email);
+    if (!user) {
+        throw new Error('User with this email does not exists');
+    }
 
+    if (user.is_active) {
+        throw new Error('User is already activated');
+    }
+
+    const isOtpMatch = await bcrypt.compare(otpCode, user.otp_code);
+    if (!isOtpMatch) {
+        throw new Error('Invalid OTP code');
+    } 
+
+    if (new Date() > user.otp_expires_at) {
+        throw new Error('OTP code has expired. Please request a new one.');
+    }
+
+    return await userModel.activateUser(email);
+}
   
 module.exports = {
-    register
+    register,
+    verifyOtp
 }
