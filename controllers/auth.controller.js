@@ -36,7 +36,45 @@ const verifyOtp = async (req, res) => {
     }
 }
 
+const resendOtp = async (req, res) => {
+    try {
+        const { email } = req.validate;
+        await authService.resendOtp(email);
+        return res.json({
+            status: 'success',
+            message: 'OTP resent successfully. Please check your mailbox or spam folder for the OTP.',
+        });
+    } catch (error) {
+        const statusCode = error.message.includes('User') ? 400 : 500;
+        return res.status(statusCode).json({
+            status: 'error',
+            message: 'Resend OTP failed',
+            error: error.message
+        });
+    }
+}
+
+const login = async (req, res) => {
+    try {
+        const { email, password} = req.validate;
+        const response = await authService.login(email, password);
+        return res.json({
+            status: 'success',
+            message: 'Login successful',
+            data: response
+        });
+    } catch (error) {
+        return res.status(401).json({
+            status: 'error',
+            message: 'Login failed',
+            error: error.message
+        });
+    }
+}
+
 module.exports = {
     register,
-    verifyOtp
+    verifyOtp,
+    resendOtp,
+    login
 }

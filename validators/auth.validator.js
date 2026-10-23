@@ -26,7 +26,24 @@ const verifyOtpSchema = z.object({
         .min(6, "OTP code must be 6 characters")
 });
 
+const resendOtpSchema = z.object({
+    email: z.string()
+        .min(1, "Email is required")
+        .email("Please enter a valid email address")
+});
+
+const loginSchema = z.object({
+    email: z.string()
+        .min(1, "Email is required")
+        .email("Please enter a valid email address"),
+    password: z.string()
+        .min(1, "Password is required")
+        .min(8, "Password must be at least 8 characters"),
+});
+
 module.exports = {
     registerSchema,
-    verifyOtpSchema
+    verifyOtpSchema,
+    resendOtpSchema,
+    loginSchema
 }

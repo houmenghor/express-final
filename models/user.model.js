@@ -24,14 +24,21 @@ const activateUser = async (email) => {
 }
 
 const getUserByEmail = async (email) => {
-    const query = 'SELECT email, is_active, otp_code, otp_expires_at FROM users WHERE email = $1';
+    const query = 'SELECT username ,email, is_active, password, otp_code, otp_expires_at FROM users WHERE email = $1';
     const value = [email];
     const result = await pool.query(query, value);
     return result.rows[0];
 }
 
-const findUserById = async (id) => {
-    const query = 'SELECT id, username, email, is_active, profile_image FROM users WHERE id = $1';
+const updateOtpCode = async (email, otpCode, otpExpiresAt) => {
+    const query = `UPDATE users SET otp_code = $1, otp_expires_at = $2 WHERE email = $3`;
+    const values = [otpCode, otpExpiresAt, email];
+    const result = await pool.query(query, values);
+    return result.rows[0];
+}
+
+const GetUserById = async (id) => {
+    const query = 'SELECT * FROM users WHERE id = $1';
     const value = [id];
     const result = await pool.query(query, value);
     return result.rows[0];
@@ -41,6 +48,7 @@ module.exports = {
     checkEmailExists,
     createUser,
     activateUser,
-    findUserById,
-    getUserByEmail
+    GetUserById,
+    getUserByEmail,
+    updateOtpCode
 }
