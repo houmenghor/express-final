@@ -24,7 +24,7 @@ const activateUser = async (email) => {
 }
 
 const getUserByEmail = async (email) => {
-    const query = 'SELECT username ,email, is_active, password, otp_code, otp_expires_at FROM users WHERE email = $1';
+    const query = 'SELECT id ,username ,email, is_active, password, otp_code, otp_expires_at FROM users WHERE email = $1';
     const value = [email];
     const result = await pool.query(query, value);
     return result.rows[0];

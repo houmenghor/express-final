@@ -120,10 +120,24 @@ const login = async (email, password) => {
 
     return { user, token };
 }
+
+const getProfile = async (userId) => {
+    const user = await userModel.GetUserById(userId);
+    if (!user) {
+        throw new Error('Unauthorized');
+    }
+
+    delete user.password;
+    delete user.otp_code;
+    delete user.otp_expires_at;
+
+    return user;
+} 
   
 module.exports = {
     register,
     verifyOtp,
     resendOtp,
-    login
+    login,
+    getProfile
 }

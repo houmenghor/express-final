@@ -72,9 +72,30 @@ const login = async (req, res) => {
     }
 }
 
+const getProfile = async (req, res) => {
+    // try {
+        // console.log('Decode token', req.user);
+        const userId = req.user.id;
+        const response = await authService.getProfile(userId);
+        return res.json({
+            status: 'success',
+            message: 'Profile retrieved successfully',
+            data: response
+        });
+    // } catch (error) {
+    //     const statusCode = error.message.includes('Unauthorized') ? 401 : 500;
+    //     return res.status(statusCode).json({
+    //         status: 'error',
+    //         message: 'Failed to retrieve profile',
+    //         error: error.message
+    //     });
+    // }
+}
+
 module.exports = {
     register,
     verifyOtp,
     resendOtp,
-    login
+    login,
+    getProfile
 }
