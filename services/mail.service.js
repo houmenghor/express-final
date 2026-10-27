@@ -1,4 +1,6 @@
-const transporter = require('../config/mail.config');
+const resend = require('../config/mail.config');
+
+// const transporter = require('../config/mail.config');
 require('dotenv').config();
 
 const sendOtpEmail = async (email, username, otpCode) => {
@@ -22,12 +24,25 @@ const sendOtpEmail = async (email, username, otpCode) => {
         </html>
     `;
 
-    await transporter.sendMail({
-        from: `My App <${process.env.SMTP_USER}>`,
+    // await transporter.sendMail({
+    //     from: `My App <${process.env.SMTP_USER}>`,
+    //     to: email,
+    //     subject: 'Your Verification Code',
+    //     html: htmlContent
+    // });
+
+    const { data, error } = await resend.emails.send({
+        from: `My App <${process.env.EMAIL_FROM}>`,
         to: email,
         subject: 'Your Verification Code',
         html: htmlContent
     });
+    if (error) {
+        console.error('Resend Error:', error.message);
+        throw new Error(error.message);
+    }
+
+    return data;
 };
 
 module.exports = { sendOtpEmail };
