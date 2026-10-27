@@ -6,6 +6,12 @@ app.use(express.json());
 const authRoutes = require('./routes/auth.route');
 app.use('/api/auth', authRoutes);
 
+app.get('/health', (req, res) => {
+    res.send({
+        status: 'success',
+        message: 'api is running'
+    });
+});
 
 const port = process.env.PORT;
 app.listen(port, () => {
