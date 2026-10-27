@@ -133,11 +133,49 @@ const getProfile = async (userId) => {
 
     return user;
 } 
-  
+
+const forgotPassword = async (email) => {
+    const user = await userModel.getUserByEmail(email);
+    if (!user) {
+        throw new Error('User with this email does not exists');
+    }
+
+    const otpCode = generateOTP();
+    const hasedOtpCode = await bcrypt.hash(otpCode, 10);
+    const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+    await userModel.updateOtpCode(email, hasedOtpCode, otpExpiresAt);
+    await sendOtpEmail(email, user.username, otpCode);
+}
+
+const verifyResetOtp = async (email, otpCode) => {
+    const user = await userModel.getUserByEmail(email);
+    
+    const isMatch = await bcrypt.compare(otpCode, user.otp_code);
+    if (!isMatch) {
+        throw new Error('Invalid OTP code');
+    }
+
+    if (new Date() > user.otp_expires_at) {
+        throw new Error('OTP code has expired. Please request a new one.');
+    }
+
+    return true;
+}
+
+const resetPassword = async (email, newPassword) => {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const user = await userModel.updatePassword(email, hashedPassword);
+    return user;
+}
+
 module.exports = {
     register,
     verifyOtp,
     resendOtp,
     login,
-    getProfile
+    getProfile,
+    forgotPassword,
+    verifyResetOtp,
+    resetPassword
 }

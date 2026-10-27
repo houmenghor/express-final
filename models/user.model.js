@@ -44,11 +44,20 @@ const GetUserById = async (id) => {
     return result.rows[0];
 }
 
+const updatePassword = async (email, newPassword) => {
+    const query = `UPDATE users SET password = $1, otp_code = NULL, otp_expires_at = NULL
+        WHERE email = $2 RETURNING id, username, email, is_active, profile_image`;
+    const values = [newPassword, email];
+    const result = await pool.query(query, values);
+    return result.rows[0];
+}
+ 
 module.exports = {
     checkEmailExists,
     createUser,
     activateUser,
     GetUserById,
     getUserByEmail,
-    updateOtpCode
+    updateOtpCode,
+    updatePassword
 }

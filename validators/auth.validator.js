@@ -41,9 +41,42 @@ const loginSchema = z.object({
         .min(8, "Password must be at least 8 characters"),
 });
 
+const forgotPasswordSchema = z.object({
+    email: z.string()
+        .min(1, "Email is required")
+        .email("Please enter a valid email address"),
+});
+
+const verifyResetOtpSchema = z.object({
+    email: z.string()
+        .min(1, "Email is required")
+        .email("Please enter a valid email address"),
+    otp_code: z.string()
+        .min(1, "OTP code is required")
+        .min(6, "OTP code must be 6 characters")
+});
+
+const resetPasswordSchema = z.object({
+    email: z.string()
+        .min(1, "Email is required")
+        .email("Please enter a valid email address"),
+    new_password: z.string()
+        .min(1, "Password is required")
+        .min(8, "Password must be at least 8 characters"),
+    confirmPassword: z.string()
+        .min(1, "Confirm Password is required")
+}).refine((data) => data.new_password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"]
+});
+
+
 module.exports = {
     registerSchema,
     verifyOtpSchema,
     resendOtpSchema,
-    loginSchema
+    loginSchema,
+    forgotPasswordSchema,
+    verifyResetOtpSchema,
+    resetPasswordSchema
 }
